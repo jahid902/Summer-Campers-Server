@@ -61,6 +61,12 @@ async function run() {
         const result = await teachersCollection.find().sort({students : -1}).limit(6).toArray()
         res.send(result);
       })
+
+      // get all teachers
+    app.get('/allTeachers', async (req,res)=>{
+      const result = await teachersCollection.find().toArray()
+      res.send(result);
+    })
     
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
