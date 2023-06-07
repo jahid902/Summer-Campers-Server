@@ -35,6 +35,7 @@ async function run() {
 
       const usersCollection = client.db('SummerCampers').collection('users');
       const classesCollection = client.db('SummerCampers').collection('classes');
+      const teachersCollection = client.db('SummerCampers').collection('teachers');
 
     // post user role to Db
       app.post('/users', async (req,res)=> {
@@ -42,10 +43,22 @@ async function run() {
           const result = await usersCollection.insertOne(user);
           res.send(result);
       })
-      
+
+      // get all classes
+      app.get('/allClass', async (req,res)=>{
+        const result = await classesCollection.find().toArray()
+        res.send(result)
+      })
+
       // get top 6 classes for most enrolled
       app.get('/classes', async (req,res)=>{
-        const result = await classesCollection.find().sort({ enrolled:-1 }).limit(6).toArray()
+        const result = await classesCollection.find().sort({ enrolled:-1 }).limit(8).toArray()
+        res.send(result);
+      })
+
+      // get 6 teachers for most students 
+      app.get('/teachers', async (req,res)=>{
+        const result = await teachersCollection.find().sort({students : -1}).limit(6).toArray()
         res.send(result);
       })
     
