@@ -32,6 +32,22 @@ async function run() {
     
     // await client.connect();
     // commented out client.connect ***
+
+      const usersCollection = client.db('SummerCampers').collection('users');
+      const classesCollection = client.db('SummerCampers').collection('classes');
+
+    // post user role to Db
+      app.post('/users', async (req,res)=> {
+          const user = req.body;
+          const result = await usersCollection.insertOne(user);
+          res.send(result);
+      })
+      
+      // get top 6 classes for most enrolled
+      app.get('/classes', async (req,res)=>{
+        const result = await classesCollection.find().sort({ enrolled:-1 }).limit(6).toArray()
+        res.send(result);
+      })
     
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -47,9 +63,9 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('Assignment 12')
+    res.send('Summer Campers is running')
   })
   
   app.listen(port, () => {
-    console.log(`Assignment 12 ${port}`)
+    console.log(`Summer Campers in running on port: ${port}`)
   })
