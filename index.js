@@ -81,6 +81,19 @@ async function run() {
 
     })
 
+    // get user added class by email
+    app.get('/addedClass/:email', async(req,res) => {
+
+      const email = req.params.email;
+      let query = {}
+      if(email){
+         query = {email : email}
+      }
+      const result = await classesCollection.find(query).toArray()
+      res.send(result)
+
+    })
+
     // post class route 
     app.post('/addClass', async(req,res) => {
       const body = req.body;
