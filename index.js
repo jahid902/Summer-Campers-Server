@@ -15,7 +15,7 @@ app.use(express.json())
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ee0rgus.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -93,6 +93,31 @@ async function run() {
       res.send(result)
 
     })
+
+    // get route for single Class information
+    app.get('/singleClass/:id', async (req,res) => {
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result = await classesCollection.findOne(query);
+      res.send(result);
+    })
+
+    // update teacher added class route
+    app.patch('/singleClass/:id', async(req,res) => {
+        const id = req.params.id;
+        const body = req.body;
+        const query = {_id : new ObjectId(id)}
+        const options = {
+          $set: {
+            price : body.price,
+            enrolled : body.enrolled,
+            duration : body.duration
+          }
+        }
+        const result = await classesCollection.updateOne(query,options)
+        res.send(result);
+    })
+
 
     // post class route 
     app.post('/addClass', async(req,res) => {
