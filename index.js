@@ -67,6 +67,19 @@ async function run() {
       const result = await teachersCollection.find().toArray()
       res.send(result);
     })
+
+    // get single user data route
+    app.get('/user', async(req,res) =>{
+      const email = req.query?.email;
+      let query = {}
+      if(email){
+        query = { email: email}
+      }
+
+      const result = await usersCollection.findOne(query);
+      res.send(result);
+
+    })
     
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
