@@ -82,6 +82,25 @@ async function run() {
 
     })
 
+    // get student selected classes
+    app.get('/userClasses', async(req,res) =>{
+      const email = req.query?.email;
+      let query = {}
+      if(email){
+        query = { email: email}
+      }
+      const result = await selectedClassesCollection.find(query).toArray();
+      res.send(result);
+    })
+
+    // delete specific student class by id
+    app.delete('/classDlt/:id', async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result = await selectedClassesCollection.deleteOne(query);
+      res.send(result);
+    })
+
     // get user added class by email
     app.get('/addedClass/:email', async(req,res) => {
 
@@ -133,7 +152,9 @@ async function run() {
       const result = await selectedClassesCollection.insertOne(body);
       res.send(result);
     })
-    
+
+    // get route email wise for user selected class
+
     
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
