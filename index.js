@@ -153,7 +153,25 @@ async function run() {
       res.send(result);
     })
 
-    // get route email wise for user selected class
+    // get route for all users
+    app.get('/allUsers', async(req,res) => {
+      const result = await usersCollection.find().toArray();
+      res.send(result);
+    })
+
+    // patch route for user role update
+    app.patch('/updateUser/:id', async(req,res) => {
+      const id = req.params.id;
+      const body = req.body;
+      const query = {_id : new ObjectId(id)}
+      const options = {
+        $set: {
+          role : body.role
+        }
+      }
+      const result = await usersCollection.updateOne(query,options)
+      res.send(result);
+    })
 
     
     await client.db("admin").command({ ping: 1 });
