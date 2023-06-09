@@ -36,6 +36,7 @@ async function run() {
       const usersCollection = client.db('SummerCampers').collection('users');
       const classesCollection = client.db('SummerCampers').collection('classes');
       const teachersCollection = client.db('SummerCampers').collection('teachers');
+      const selectedClassesCollection = client.db('SummerCampers').collection('selectedClasses');
 
     // post user role to Db
       app.post('/users', async (req,res)=> {
@@ -125,6 +126,14 @@ async function run() {
       const result = await classesCollection.insertOne(body);
       res.send(result);
     })
+
+    // post student selected class route
+    app.post('/selectedClass', async (req,res) => {
+      const body = req.body;
+      const result = await selectedClassesCollection.insertOne(body);
+      res.send(result);
+    })
+    
     
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
