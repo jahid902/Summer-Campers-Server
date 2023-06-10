@@ -3,6 +3,7 @@ const app = express()
 const cors = require('cors')
 require('dotenv').config()
 const port = process.env.PORT || 5000
+const stripe = require("stripe")(process.env.PAYMENT_SK);
 
 // middleware
 const corsOptions = {
@@ -37,6 +38,23 @@ async function run() {
       const classesCollection = client.db('SummerCampers').collection('classes');
       const teachersCollection = client.db('SummerCampers').collection('teachers');
       const selectedClassesCollection = client.db('SummerCampers').collection('selectedClasses');
+
+    // stripe payment route
+    app.post('/create-payment-intent', async(req,res) => {
+
+      const {price} = req.body;
+      if(price){
+        const amount = parseFloat(price) * 100 
+        const paymentIntent = await stripe.paymentIntents.create({
+
+          amount: amount,
+          currency: 'usd',
+          payment_method_types: ['card'],
+        })
+        res.send({clientSecret: paymentIntent.client_secret})
+      }
+    })
+
 
     // post user role to Db
       app.post('/users', async (req,res)=> {
@@ -115,10 +133,10 @@ async function run() {
     })
 
     // get route for single Class information
-    app.get('/singleClass/:id', async (req,res) => {
+    app.get('/oneClass/:id', async (req,res) => {
       const id = req.params.id;
       const query = {_id : new ObjectId(id)}
-      const result = await classesCollection.findOne(query);
+      const result = await selectedClassesCollection.findOne(query);
       res.send(result);
     })
 
