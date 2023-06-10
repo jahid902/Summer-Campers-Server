@@ -36,6 +36,7 @@ async function run() {
 
       const usersCollection = client.db('SummerCampers').collection('users');
       const classesCollection = client.db('SummerCampers').collection('classes');
+      const enrolledClassCollection = client.db('SummerCampers').collection('enrolledClass');
       const teachersCollection = client.db('SummerCampers').collection('teachers');
       const selectedClassesCollection = client.db('SummerCampers').collection('selectedClasses');
 
@@ -55,6 +56,24 @@ async function run() {
       }
     })
 
+    // post method for successful enrolled class
+    app.post('/enrolledClass', async(req,res) => {
+      const body = req.body;
+      const result = await enrolledClassCollection.insertOne(body)
+      res.send(result);
+    })
+
+    // get route for payed courses
+    app.get('/userEnrolledClasses', async(req,res)=>{
+      const email = req.query.email;
+      let query = {}
+      if(email){
+        query = { email: email}
+      }
+      
+      const result = await enrolledClassCollection.find(query).toArray()
+      res.send(result);
+    })
 
     // post user role to Db
       app.post('/users', async (req,res)=> {
