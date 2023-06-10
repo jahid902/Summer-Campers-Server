@@ -71,9 +71,11 @@ async function run() {
         query = { email: email}
       }
       
-      const result = await enrolledClassCollection.find(query).toArray()
+      const result = await enrolledClassCollection.find(query).sort({date: -1}).toArray()
       res.send(result);
     })
+
+    
 
     // post user role to Db
       app.post('/users', async (req,res)=> {
