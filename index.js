@@ -75,6 +75,7 @@ async function run() {
       res.send(result);
     })
 
+    // create update and delete route
     
 
     // post user role to Db
@@ -140,6 +141,14 @@ async function run() {
       res.send(result);
     })
 
+    //admin class delete route 
+    app.delete('/specificClassDlt/:id', async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result = await classesCollection.deleteOne(query);
+      res.send(result);
+    })
+
     // get user added class by email
     app.get('/addedClass/:email', async(req,res) => {
 
@@ -171,6 +180,20 @@ async function run() {
             price : body.price,
             enrolled : body.enrolled,
             duration : body.duration
+          }
+        }
+        const result = await classesCollection.updateOne(query,options)
+        res.send(result);
+    })
+
+    // update class status route patch route
+    app.patch('/specificClass/:id', async(req,res) => {
+        const id = req.params.id;
+        const body = req.body;
+        const query = {_id : new ObjectId(id)}
+        const options = {
+          $set: {
+            status: body.status
           }
         }
         const result = await classesCollection.updateOne(query,options)
